@@ -35,3 +35,7 @@ Time in thread 1 is [0.195483]
 ```
 * Thread 1 does about 2.9x more work than thread 2. 
 * Boths threads 0 and 2 can take more work in parallel and thus result in more speedup. It's like you have more resources but you can't just get things balanced correctly.
+
+### Distributing the workload
+* So instead of just giving each thread a huge chuck, I am going to try and be more fair and just round-robin each row to the respective threads.
+* I seem to be stuck at 5.40x-5.75x speedup. I am getting the right number of iterations per thread, but still I can't break the 7.0x ratio.
