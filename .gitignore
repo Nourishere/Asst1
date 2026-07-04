@@ -1,0 +1,5 @@
+*.swp
+*.o
+*.ppm
+myexp
+mandelbrot*
