@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <thread>
 #include <cstdlib>
+#include <algorithm>
 
 #include "CycleTimer.h"
 
@@ -31,11 +32,13 @@ extern void mandelbrotSerial(
 void workerThreadStart(WorkerArgs * const args) {
 
 	// round robin work distribution
-	const unsigned int rowsperiter = 1;
+	const unsigned int rowsperiter = 3;
+
 	for(unsigned int startrow = args->threadId * rowsperiter; startrow < args->height; startrow += args->numThreads * rowsperiter){
+		unsigned int numRows = std::min(rowsperiter, args->height - startrow);
 		mandelbrotSerial(args->x0, args->y0, args->x1, args->y1,
 						args->width, args->height,
-						startrow, rowsperiter,
+						startrow, numRows,
 						args->maxIterations, args->output);
 	}
 }
@@ -64,7 +67,7 @@ void mandelbrotThread(
     WorkerArgs args[MAX_THREADS];
 
     for (int i=0; i<numThreads; i++) {
-      
+
         // TODO FOR CS149 STUDENTS: You may or may not wish to modify
         // the per-thread arguments here.  The code below copies the
         // same arguments for each thread
@@ -77,7 +80,7 @@ void mandelbrotThread(
         args[i].maxIterations = maxIterations;
         args[i].numThreads = numThreads;
         args[i].output = output;
-      
+
         args[i].threadId = i;
     }
 
@@ -87,7 +90,7 @@ void mandelbrotThread(
     for (int i=1; i<numThreads; i++) {
         workers[i] = std::thread(workerThreadStart, &args[i]);
     }
-    
+
     workerThreadStart(&args[0]);
 
     // join worker threads
